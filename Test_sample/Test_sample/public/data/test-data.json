@@ -1,0 +1,22 @@
+
+{
+    "title": "Przykładowy Test",
+    "questions": [
+      {
+        "question": "To jest pytanie numer 1?",
+        "answers": [
+          {"id": "q1a1", "content": "Odpowiedź A"},
+          {"id": "q1a2", "content": "Odpowiedź B"},
+          {"id": "q1a3", "content": "Odpowiedź C"}
+        ]
+      },
+      {
+        "question": "To jest pytanie numer 2?",
+        "answers": [
+          {"id": "q2a1", "content": "Odpowiedź X"},
+          {"id": "q2a2", "content": "Odpowiedź Y"},
+          {"id": "q2a3", "content": "Odpowiedź Z"}
+        ]
+      }
+    ]
+  }
