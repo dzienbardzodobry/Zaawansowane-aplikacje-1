@@ -201,23 +201,21 @@ const storeFinalResults = (): void => {
     const testData = JSON.parse(localStorage.getItem("test-data")!);
     let totalPoints = 0;
     let totalTimeSpent = 0;
- 
+    let questionDetails = '';
 
-    const questionTimes = testData.questions.map((question: Question, idx: number) => {
-
+    testData.questions.forEach((question: Question, idx: number) => {
         const isCorrect = question.answers.some(answer => answer.selected && answer.content === question.correctAnswer);
         totalPoints += isCorrect ? 1 : 0;
-        totalTimeSpent += question.timeSpent || 0; 
- 
-        return `Pytanie ${idx + 1}: ${question.timeSpent || 0} sekund`;
+        totalTimeSpent += question.timeSpent || 0;
+
+        questionDetails += `Pytanie ${idx + 1}: ${question.question} - Czas: ${question.timeSpent || 0} sekund<br>`;
     });
  
     const totalTestTime = totalTimeNode.innerHTML;
-    const resultSummaryNode: HTMLParagraphElement = document.querySelector("#result-summary")!;
-    resultSummaryNode.innerHTML = `Całkowity czas testu: ${totalTestTime} sekund<br>Suma punktów: ${totalPoints}`;
+    resultSummaryNode.innerHTML = `<strong>Całkowity czas testu:</strong> ${totalTestTime} sekund<br><strong>Suma punktów:</strong> ${totalPoints}<br><br>${questionDetails}`;
     document.getElementById("result-container")!.style.display = "block";
-
 };
+
 nextNode.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
