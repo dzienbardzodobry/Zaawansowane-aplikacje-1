@@ -10,12 +10,12 @@ const nextNode: HTMLButtonElement = document.querySelector("#next")!
 const endNode: HTMLButtonElement = document.querySelector("#end")!
 const questionTimeNode: HTMLSpanElement = document.querySelector("#question-time")!
 const totalTimeNode: HTMLSpanElement = document.querySelector("#total-time")!
+const cancelButton: HTMLButtonElement = document.querySelector("#cancel")!;
 let totalIntervalId: number;
 let testStartTime: Date;
 const startNode: HTMLButtonElement = document.querySelector("#start")!; 
 const totalTestTime = totalTimeNode.innerHTML; 
 const resultSummaryNode: HTMLParagraphElement = document.querySelector("#result-summary")!;
-// console.log(testData)
  
 titleNode.innerHTML = testData.title;
  
@@ -23,6 +23,20 @@ let currentIntervalId: number
  
 localStorage.setItem("current-question-idx", "0")
 localStorage.setItem("test-data", JSON.stringify(testData))
+
+const cancelTest = (): void => {
+    stopTest();
+    resetTest();
+    startNode.disabled = false;
+};
+
+cancelButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    cancelTest();
+});
+const resetTest = (): void => {
+    window.location.reload();
+};
  
 const shuffleQuestions = (questions: Question[]): Question[] => {
     for (let i = questions.length - 1; i > 0; i--) {
@@ -31,9 +45,6 @@ const shuffleQuestions = (questions: Question[]): Question[] => {
     }
     return questions;
 };
- 
- 
- 
  
 const startTest = (): void => {
     testStartTime = new Date();
@@ -85,7 +96,6 @@ const displayQuestion = (): void => {
     updateNavigationButtons(currentIdx);
 };
 
-
 const updateNavigationButtons = (currentIdx: number): void => {
     const testData = JSON.parse(localStorage.getItem("test-data")!);
     const totalQuestions = testData.questions.length;
@@ -102,18 +112,15 @@ const navigateQuestion = (moveNext: boolean): void => {
     localStorage.setItem("current-question-idx", `${newIdx}`);
     displayQuestion();
 };
+
 const lockAnswersIfSelected = (idx: number): void => {
     const testData = JSON.parse(localStorage.getItem("test-data")!);
     const question = testData.questions[idx];
- 
-    if (question.answers.some((answer: Answer) => answer.selected)) {
-        question.answers.forEach((answer: Answer) => {
-            if (answer.selected) {
-                answer.locked = true;
-            }
-        });
-    }
- 
+    question.answers.forEach((answer: Answer) => {
+        if (answer.selected) {
+            answer.locked = true;
+        }
+    });
     localStorage.setItem("test-data", JSON.stringify(testData));
 }
 
@@ -153,12 +160,17 @@ const updateAnswerSelection = (selectedAnswer: Answer): void => {
     question.answers.forEach((answer: Answer) => {
         if (answer.id === selectedAnswer.id) {
             answer.selected = true;
+            answer.locked = true;  
+        } else {
+            answer.selected = false;  
+            answer.locked = true;
         }
     });
  
     localStorage.setItem("test-data", JSON.stringify(testData));
     checkIfAllAnswered();
 };
+
 const updateQuestionTimeSpent = (idx: number): void => {
     const testData = JSON.parse(localStorage.getItem("test-data")!);
     const question = testData.questions[idx];
