@@ -76,14 +76,20 @@ const startCounter = (): void => {
     const currentIdx: number = parseInt(localStorage.getItem("current-question-idx")!);
     const currentQuestion: Question = JSON.parse(localStorage.getItem("test-data")!).questions[currentIdx];
     let time: number = currentQuestion.timeSpent || 0;
+    questionTimeNode.innerHTML = time.toString();
     currentIntervalId = setInterval(() => {
         questionTimeNode.innerHTML = `${++time}`;
     }, 1000);
 };
+
  
-const stopCounter = ():void => {
+const stopCounter = (): void => {
     clearInterval(currentIntervalId);
-    questionTimeNode.innerHTML = '0'
+    const currentIdx: number = parseInt(localStorage.getItem("current-question-idx")!);
+    const testData = JSON.parse(localStorage.getItem("test-data")!);
+    const currentTimeSpent = parseInt(questionTimeNode.innerHTML);
+    testData.questions[currentIdx].timeSpent = currentTimeSpent;
+    localStorage.setItem("test-data", JSON.stringify(testData));
 }
  
 
@@ -175,9 +181,10 @@ const updateQuestionTimeSpent = (idx: number): void => {
     const testData = JSON.parse(localStorage.getItem("test-data")!);
     const question = testData.questions[idx];
     const currentTimeSpent = parseInt(questionTimeNode.innerHTML);
-    question.timeSpent = (question.timeSpent || 0) + currentTimeSpent;
+    question.timeSpent = currentTimeSpent;
     localStorage.setItem("test-data", JSON.stringify(testData));
 };
+
   const checkIfAllAnswered = (): void => {
     const testData = JSON.parse(localStorage.getItem("test-data")!);
     const allAnswered = testData.questions.every((question: Question) =>
